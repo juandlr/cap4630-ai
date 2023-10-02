@@ -120,6 +120,9 @@ def player_move():
 
 
 def computer_move():
+    """
+    Uses the minimax algorithm to make a move that will never lose
+    """
     best_score = -math.inf
     best_move = 0
 
