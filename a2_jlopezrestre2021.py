@@ -93,26 +93,6 @@ def roulette_selection(population, fitness_scores):
     return selected_individual
 
 
-def draw_plot(cities):
-    # Create a scatter plot to visualize the random points
-    plt.figure(figsize=(6, 6))
-    # Extract x and y coordinates from the list of points using list comprehension
-    x_coordinates = [point[0] for point in cities]
-    y_coordinates = [point[1] for point in cities]
-    plt.scatter(x_coordinates, y_coordinates, c='blue', marker='o', s=10)
-
-    for i in range(len(cities) - 1):
-        plt.plot([x_coordinates[i], x_coordinates[i + 1]], [y_coordinates[i], y_coordinates[i + 1]], c='red')
-
-    plt.xlim(0, 200)
-    plt.ylim(0, 200)
-    plt.gca().invert_yaxis()
-    plt.gca().set_aspect('equal', adjustable='box')
-    plt.xlabel('X-axis')
-    plt.ylabel('Y-axis')
-    plt.title('Randomly Generated Points')
-
-
 def one_point_crossover(parent1, parent2):
     """
     Perform one-point crossover on two parent individuals for the Traveling Salesman Problem.
@@ -155,14 +135,15 @@ def mutate(individual, mutation_rate):
         list: A mutated tour.
     """
     # Check if mutation should occur based on the mutation rate
+    offspring = list(individual)
     if random.random() < mutation_rate:
         # Choose two distinct random indices for swapping
-        idx1, idx2 = random.sample(range(len(individual)), 2)
+        idx1, idx2 = random.sample(range(len(offspring)), 2)
 
         # Swap the cities at the selected indices
-        individual[idx1], individual[idx2] = individual[idx2], individual[idx1]
+        offspring[idx1], offspring[idx2] = offspring[idx2], offspring[idx1]
 
-    return individual
+    return offspring
 
 
 def create_new_generation(current_population, population_size):
@@ -180,18 +161,19 @@ def create_new_generation(current_population, population_size):
 
     while len(new_population) < population_size:
         # Randomly select two parent individuals from the current population
-        parent1 = roulette_selection(current_population, fitness)
+        # parent1 = roulette_selection(current_population, fitness)
         # parent2 = roulette_selection(current_population, fitness)
-
-        # Apply one-point crossover to create two offspring
         # offspring1, offspring2 = one_point_crossover(parent1, parent2)
+        # new_population.append(offspring1)
+        # new_population.append(offspring2)
 
         # generate offspring by using mutation
+        parent1 = roulette_selection(current_population, fitness)
+        parent2 = roulette_selection(current_population, fitness)
         offspring1 = mutate(parent1, 0.1)
-
-        # Add the offspring to the new population
+        offspring2 = mutate(parent2, 0.1)
         new_population.append(offspring1)
-        # new_population.append(offspring2)
+        new_population.append(offspring2)
 
     # If the new population size is larger than the desired size, truncate it
     if len(new_population) > population_size:
@@ -200,14 +182,34 @@ def create_new_generation(current_population, population_size):
     return new_population
 
 
+def draw_plot(cities):
+    # Create a scatter plot to visualize the random points
+    plt.figure(figsize=(6, 6))
+    # Extract x and y coordinates from the list of points using list comprehension
+    x_coordinates = [point[0] for point in cities]
+    y_coordinates = [point[1] for point in cities]
+    plt.scatter(x_coordinates, y_coordinates, c='blue', marker='o', s=10)
+    distance = calculate_individual_distance(cities)
+
+    for i in range(len(cities) - 1):
+        plt.plot([x_coordinates[i], x_coordinates[i + 1]], [y_coordinates[i], y_coordinates[i + 1]], c='red')
+
+    plt.xlim(0, 200)
+    plt.ylim(0, 200)
+    plt.gca().invert_yaxis()
+    plt.gca().set_aspect('equal', adjustable='box')
+    plt.xlabel('X-axis')
+    plt.ylabel('Y-axis')
+    plt.title('Randomly Generated Points ' + str(distance))
+
+
 num_cities = 5
 population_size = 100
-cities = [] #[[143, 141], [82, 112], [11, 22], [81, 36], [149, 84], [23, 68], [75, 35], [184, 133], [45, 154], [78, 97]]
+cities = [[143, 141], [82, 112], [11, 22], [81, 36], [149, 84], [23, 68], [75, 35], [184, 133], [45, 154], [78, 97]]
 new_population = []
 record_distance = math.inf
-current_best = []
 fitness = []
-best_individual = None  # Initialize with None
+best_individual = cities
 generations = 100
 
 # create cities
@@ -227,7 +229,6 @@ for index, value in enumerate(fitness):
         record_distance = value
         best_individual = current_population[index]
 
-print(calculate_individual_distance(cities))
 
 # run evolution for n generations
 for i in range(generations):
@@ -240,6 +241,7 @@ for i in range(generations):
 
 print(record_distance)
 print(best_individual)
+print(calculate_individual_distance(best_individual))
 
 draw_plot(cities)
 draw_plot(best_individual)
