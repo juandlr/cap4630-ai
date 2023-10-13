@@ -15,20 +15,13 @@ class Ant:
     def __init__(self):
         self.tour = []  # List to store the ant's memory
         self.is_best = False
-        start_position = random.randint(0, attraction_count - 1)
+        start_position = random.randint(0, num_cities - 1)
         self.visit_attraction(start_position)
 
     def visit_attraction(self, attraction):
         """
         Visit a specific attraction and update the ant's memory and action.
         """
-        self.tour.append(attraction)
-
-    def visit_random_attraction(self, attractions):
-        """
-        Visit a random attraction from a list of attractions and update the ant's memory and action.
-        """
-        attraction = random.choice(attractions)
         self.tour.append(attraction)
 
     def visit_probabilistic_attraction(self, pheromone_trails, attraction_count, distance_matrix, alpha, beta):
@@ -133,6 +126,7 @@ def update_pheromones(evaporation_rate, pheromone_trails, attraction_count, ant_
 
 def draw_plot(ant, cities):
     # Create a scatter plot to visualize the random points
+    cities = [cities[i] for i in ant.tour]
     plt.figure(figsize=(6, 6))
     # Extract x and y coordinates from the list of points using list comprehension
     x_coordinates = [point[0] for point in cities]
@@ -196,7 +190,7 @@ def init_pheromone_trails(size):
 #     [6, 11, 6, 5, 0, 3],
 #     [4, 5, 7, 6, 3, 0]
 # ]
-attraction_count = 10  # Number of attractions
+num_cities = 25  # Number of attractions
 alpha = 1.0  # Pheromone influence
 beta = 2.0  # Heuristic influence
 number_of_ants_factor = 0.5  # Fraction of attractions to use as the number of ants
@@ -204,40 +198,37 @@ evaporation_rate = 0.5
 best_distance = math.inf
 best_ant = None
 total_iterations = 100
-cities = [[143, 141], [82, 112], [11, 22], [81, 36], [149, 84], [23, 68], [75, 35], [184, 133], [45, 154], [78, 97]]
+# cities = [[143, 141], [82, 112], [11, 22], [81, 36], [149, 84], [23, 68], [75, 35], [184, 133], [45, 154], [78, 97]]
+# create cities
+cities = []
+seed = 42
+random.seed(seed)
+for _ in range(num_cities):
+    x = random.randint(0, 200)
+    y = random.randint(0, 200)
+    cities.append([x, y])
 distance_matrix = generate_distance_matrix(cities)
-pheromone_trails = init_pheromone_trails(attraction_count)
+pheromone_trails = init_pheromone_trails(num_cities)
 
 # initiates the program
 for i in range(total_iterations):
-    ant_colony = setup_ants(attraction_count, number_of_ants_factor)
+    ant_colony = setup_ants(num_cities, number_of_ants_factor)
     for ant in ant_colony:
-        while len(ant.tour) != attraction_count:
-            attraction_info = ant.visit_probabilistic_attraction(pheromone_trails, attraction_count, distance_matrix, alpha, beta)
+        while len(ant.tour) != num_cities:
+            attraction_info = ant.visit_probabilistic_attraction(pheromone_trails, num_cities, distance_matrix, alpha, beta)
             attraction_index = roulette_wheel_selection(attraction_info[0], attraction_info[1])
             ant.visit_attraction(attraction_index)
 
         ant_distance = ant.get_distance_traveled()
-        print(ant_distance)
         if ant_distance < best_distance:
             best_distance = ant.get_distance_traveled()
-            print(best_distance)
             best_ant = ant
 
 best_ant.is_best = True
-update_pheromones(0.5, pheromone_trails, attraction_count, ant_colony)
-print(best_distance)
-print(best_ant)
-print(best_ant.tour)
-rearranged_cities = [cities[i] for i in best_ant.tour]
-
-# Print the rearranged list
-for element in rearranged_cities:
-    print(element)
-
+update_pheromones(0.5, pheromone_trails, num_cities, ant_colony)
 
 sample_ant = Ant()
-ant.tour = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+sample_ant.tour = [i for i in range(num_cities)]
 draw_plot(sample_ant, cities)
-draw_plot(best_ant, rearranged_cities)
+draw_plot(best_ant, cities)
 plt.show()

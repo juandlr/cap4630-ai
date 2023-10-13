@@ -203,9 +203,9 @@ def draw_plot(cities):
     plt.title('Randomly Generated Points ' + str(distance))
 
 
-num_cities = 5
+num_cities = 25
 population_size = 100
-cities = [[143, 141], [82, 112], [11, 22], [81, 36], [149, 84], [23, 68], [75, 35], [184, 133], [45, 154], [78, 97]]
+cities = [] #[[143, 141], [82, 112], [11, 22], [81, 36], [149, 84], [23, 68], [75, 35], [184, 133], [45, 154], [78, 97]]
 new_population = []
 record_distance = math.inf
 fitness = []
@@ -213,10 +213,10 @@ best_individual = cities
 generations = 500
 
 # create cities
-# for _ in range(num_cities):
-#     x = random.randint(0, 200)
-#     y = random.randint(0, 200)
-#     cities.append([x, y])
+for _ in range(num_cities):
+    x = random.randint(0, 200)
+    y = random.randint(0, 200)
+    cities.append([x, y])
 
 print(cities)
 
