@@ -160,7 +160,7 @@ def create_new_generation(current_population, population_size):
     new_population = []
 
     while len(new_population) < population_size:
-        # Randomly select two parent individuals from the current population
+        # generate offspring by using one point crossover
         # parent1 = roulette_selection(current_population, fitness)
         # parent2 = roulette_selection(current_population, fitness)
         # offspring1, offspring2 = one_point_crossover(parent1, parent2)
@@ -210,7 +210,7 @@ new_population = []
 record_distance = math.inf
 fitness = []
 best_individual = cities
-generations = 100
+generations = 500
 
 # create cities
 # for _ in range(num_cities):
