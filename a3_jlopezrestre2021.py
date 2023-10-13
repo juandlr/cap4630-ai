@@ -223,9 +223,9 @@ for i in range(total_iterations):
         if ant_distance < best_distance:
             best_distance = ant.get_distance_traveled()
             best_ant = ant
+    update_pheromones(0.5, pheromone_trails, num_cities, ant_colony)
 
 best_ant.is_best = True
-update_pheromones(0.5, pheromone_trails, num_cities, ant_colony)
 
 sample_ant = Ant()
 sample_ant.tour = [i for i in range(num_cities)]
