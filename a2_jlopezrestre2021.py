@@ -161,19 +161,19 @@ def create_new_generation(current_population, population_size):
 
     while len(new_population) < population_size:
         # generate offspring by using one point crossover
-        # parent1 = roulette_selection(current_population, fitness)
-        # parent2 = roulette_selection(current_population, fitness)
-        # offspring1, offspring2 = one_point_crossover(parent1, parent2)
-        # new_population.append(offspring1)
-        # new_population.append(offspring2)
-
-        # generate offspring by using mutation
         parent1 = roulette_selection(current_population, fitness)
         parent2 = roulette_selection(current_population, fitness)
-        offspring1 = mutate(parent1, 0.1)
-        offspring2 = mutate(parent2, 0.1)
+        offspring1, offspring2 = one_point_crossover(parent1, parent2)
         new_population.append(offspring1)
         new_population.append(offspring2)
+
+        # generate offspring by using mutation
+        # parent1 = roulette_selection(current_population, fitness)
+        # parent2 = roulette_selection(current_population, fitness)
+        # offspring1 = mutate(parent1, 0.1)
+        # offspring2 = mutate(parent2, 0.1)
+        # new_population.append(offspring1)
+        # new_population.append(offspring2)
 
     # If the new population size is larger than the desired size, truncate it
     if len(new_population) > population_size:
@@ -204,21 +204,21 @@ def draw_plot(cities):
 
 
 num_cities = 25
-population_size = 100
+population_size = 50
 cities = [] #[[143, 141], [82, 112], [11, 22], [81, 36], [149, 84], [23, 68], [75, 35], [184, 133], [45, 154], [78, 97]]
 new_population = []
 record_distance = math.inf
 fitness = []
 best_individual = cities
-generations = 500
+generations = 100
 
 # create cities
+seed = 42
+random.seed(seed)
 for _ in range(num_cities):
     x = random.randint(0, 200)
     y = random.randint(0, 200)
     cities.append([x, y])
-
-print(cities)
 
 # create initial population
 original_population = create_population(population_size, cities)

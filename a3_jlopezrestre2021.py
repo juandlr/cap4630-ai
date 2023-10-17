@@ -14,7 +14,6 @@ import numpy as np
 class Ant:
     def __init__(self):
         self.tour = []  # List to store the ant's memory
-        self.is_best = False
         start_position = random.randint(0, num_cities - 1)
         self.visit_attraction(start_position)
 
@@ -224,8 +223,6 @@ for i in range(total_iterations):
             best_distance = ant.get_distance_traveled()
             best_ant = ant
     update_pheromones(0.5, pheromone_trails, num_cities, ant_colony)
-
-best_ant.is_best = True
 
 sample_ant = Ant()
 sample_ant.tour = [i for i in range(num_cities)]
